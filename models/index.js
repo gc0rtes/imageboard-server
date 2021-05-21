@@ -12,7 +12,7 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.url, config); //line 15 changed
+  sequelize = new Sequelize(config.url, config); //line 15 changed: use our url 'config.json' when querying the data through the models.
 }
 
 fs.readdirSync(__dirname)
