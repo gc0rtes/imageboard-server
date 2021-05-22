@@ -8,7 +8,13 @@ const userRouter = require("./routers/user");
 //Create a new express server named app
 const app = express();
 
-//Create app returns the routers
+//Set up to handle incoming HTTP requests
+const jsonParser = express.json();
+
+//Add jsonParser as a middleware to app
+app.use(jsonParser);
+
+//Create app returns/path to the routers. Obs: path on routers "/"
 app.use("/images", imageRouter);
 app.use("/users", userRouter);
 

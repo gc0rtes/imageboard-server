@@ -18,5 +18,26 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Add a Root "/" POST endpoint that creates a new user
+//Add a parameters constrains on email password fullName
+//Ex: http -v POST :4000/users email=gui@gui.com password=123 fullName="Guilherme Cortes"
+router.post("/", async (req, res, next) => {
+  try {
+    const { email, password, fullName } = req.body;
+    if (!email || !password || !fullName) {
+      res.status(400).send("missing  parameters");
+    } else {
+      const createUser = await User.create({
+        email,
+        password,
+        fullName,
+      });
+      res.json(createUser);
+    }
+  } catch (e) {
+    next(e);
+  }
+});
+
 //Export the router.
 module.exports = router;
