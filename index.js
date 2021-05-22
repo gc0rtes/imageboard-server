@@ -4,6 +4,7 @@ const express = require("express");
 //Import routers files. Ex: "./routers/image"
 const imageRouter = require("./routers/image");
 const userRouter = require("./routers/user");
+const authRouter = require("./routers/auth");
 
 //Create a new express server named app
 const app = express();
@@ -14,9 +15,13 @@ const jsonParser = express.json();
 //Add jsonParser as a middleware to app
 app.use(jsonParser);
 
-//Create app returns/path to the routers. Obs: path on routers "/"
+//Create app returns/path to the routers.
+//Obs: path on this both routers is "/"
 app.use("/images", imageRouter);
 app.use("/users", userRouter);
+
+//Obs: path on this routers is "/login". So it can be acessible by "/auth/login"
+app.use("/auth", authRouter);
 
 //Define the port
 const port = process.env.PORT || 4000; // "const port =4000 ||process.env.PORT" is used when go to deploy on Heruku

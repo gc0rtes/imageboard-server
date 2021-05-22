@@ -1,6 +1,9 @@
 //Import the Router class from express.
 const { Router } = require("express");
 
+//Import/require bcrypt algorithm. This is use to 'hash' the password on DB
+const bcrypt = require("bcrypt");
+
 //Import tables from ./models. Singular Capitalized.
 const User = require("../models").users;
 
@@ -29,7 +32,8 @@ router.post("/", async (req, res, next) => {
     } else {
       const createUser = await User.create({
         email,
-        password,
+        // Here, when handing down the password to the create method we hash it.
+        password: bcrypt.hashSync(password, 10),
         fullName,
       });
       res.json(createUser);

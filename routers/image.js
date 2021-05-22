@@ -4,6 +4,9 @@ const { Router } = require("express");
 //Import tables from ./models or ../models (pay attention!). Singular Capitalized.
 const Image = require("../models").images;
 
+//Import the two jsonwebtoken library functions from path/file
+const { toJWT, toData } = require("../auth/jwt");
+
 //Create a new Router instance.
 const router = new Router();
 
@@ -15,6 +18,29 @@ router.get("/", async (req, res, next) => {
     res.send(allImages);
   } catch (e) {
     next(e);
+  }
+});
+
+//testing a new endpoint. Add protection to our endpoint
+// To test it first make a request for a new JWT:
+//http -v post :4000/auth/login email=gui password=123
+//Then test it on the protected router url :4000/images/messy Authorization:"Bearer <token>"
+
+router.get("/messy", async (req, res, next) => {
+  const auth =
+    req.headers.authorization && req.headers.authorization.split(" ");
+  if (auth && auth[0] === "Bearer" && auth[1]) {
+    try {
+      const data = toData(auth[1]);
+      const allImages = await Image.findAll();
+      res.json(allImages);
+    } catch (e) {
+      res.status(400).send("Invalid JWT token");
+    }
+  } else {
+    res.status(401).send({
+      message: "Please supply some valid credentials",
+    });
   }
 });
 
