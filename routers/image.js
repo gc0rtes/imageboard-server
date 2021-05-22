@@ -7,11 +7,15 @@ const Image = require("../models").images;
 //Import the two jsonwebtoken library functions from path/file
 const { toJWT, toData } = require("../auth/jwt");
 
+//Import/require authMiddleware from path/file
+const authMiddleware = require("../auth/middleware");
+
 //Create a new Router instance.
 const router = new Router();
 
 //Register a Root "/" GET endpoint to send all images
-router.get("/", async (req, res, next) => {
+//Now we have setup the authMiddleware just call for it to make an endpoint secured
+router.get("/", authMiddleware, async (req, res, next) => {
   try {
     console.log("i got a request for the image list");
     const allImages = await Image.findAll();
@@ -21,12 +25,13 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-//testing a new endpoint. Add protection to our endpoint
+//Add protection to our endpoint at route level
 // To test it first make a request for a new JWT:
-//http -v post :4000/auth/login email=gui password=123
-//Then test it on the protected router url :4000/images/messy Authorization:"Bearer <token>"
+//http -v post :4000/auth/login email=jesus@nazare.com password=123
+//Then test it on the protected router url
+//http -v get :4000/images/secured Authorization:"Bearer <token>"
 
-router.get("/messy", async (req, res, next) => {
+router.get("/secured", async (req, res, next) => {
   const auth =
     req.headers.authorization && req.headers.authorization.split(" ");
   if (auth && auth[0] === "Bearer" && auth[1]) {
